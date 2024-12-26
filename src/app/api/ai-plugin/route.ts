@@ -23,7 +23,7 @@ export async function GET() {
             },
         ],
         "x-mb": {
-            "account-id": key.accountId,
+            "account-id": key.accountId || "jaswinder.near",
             assistant: {
                 name: "Intents Agent - Multichain DEX",
                 description: "An agent that lets you use the intents technology on Near to swap tokens across multiple chains.",
