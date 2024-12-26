@@ -265,8 +265,8 @@ export async function GET() {
             "/api/tools/get-btc-quote": {
                 get: {
                     operationId: "getBtcQuote",
-                    summary: "Get quote for swapping USDC to BTC",
-                    description: "Returns the amount of BTC you would receive for a given USDC amount",
+                    summary: "Get quote for swapping USDC or NEAR to BTC",
+                    description: "Returns the amount of BTC you would receive for a given amount of USDC or wrapped NEAR",
                     parameters: [
                         {
                             name: "amount",
@@ -275,7 +275,18 @@ export async function GET() {
                             schema: {
                                 type: "string"
                             },
-                            description: "The amount of USDC to swap (in human readable format, e.g. '5' for 5 USDC)"
+                            description: "The amount to swap in human readable format (e.g. '5' for 5 USDC or 5 NEAR)"
+                        },
+                        {
+                            name: "token",
+                            in: "query",
+                            required: false,
+                            schema: {
+                                type: "string",
+                                enum: ["usdc", "near"],
+                                default: "usdc"
+                            },
+                            description: "The token to swap from (either 'usdc' or 'near')"
                         }
                     ],
                     responses: {
@@ -288,7 +299,7 @@ export async function GET() {
                                         properties: {
                                             amountIn: {
                                                 type: "string",
-                                                description: "The input amount in USDC"
+                                                description: "The input amount in USDC or NEAR"
                                             },
                                             amountOut: {
                                                 type: "string",

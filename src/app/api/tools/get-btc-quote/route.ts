@@ -1,13 +1,16 @@
 import { NextResponse } from 'next/server';
+import { utils } from 'near-api-js';
 
 const SOLVER_RELAY_URL = 'https://solver-relay-v2.chaindefuser.com/rpc';
 const USDC_CONTRACT = '17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1';
+const WNEAR_CONTRACT = 'wrap.near';
 const BTC_CONTRACT = 'btc.omft.near';
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const amount = searchParams.get('amount');
+    const token = searchParams.get('token')?.toLowerCase() || 'usdc';
     
     // Validate required fields
     if (!amount) {
@@ -17,7 +20,14 @@ export async function GET(request: Request) {
       );
     }
 
-    // Convert USDC amount to atomic units (6 decimals)
+    if (token !== 'usdc' && token !== 'near') {
+      return NextResponse.json(
+        { error: "Invalid token. Must be 'usdc' or 'near'" },
+        { status: 400 }
+      );
+    }
+
+    // Convert amount to atomic units based on token
     const amountFloat = parseFloat(amount);
     if (isNaN(amountFloat)) {
       return NextResponse.json(
@@ -25,7 +35,26 @@ export async function GET(request: Request) {
         { status: 400 }
       );
     }
-    const atomicAmount = (amountFloat * 1_000_000).toFixed(0);
+
+    let atomicAmount: string;
+    let inputContract: string;
+    
+    if (token === 'usdc') {
+      // USDC has 6 decimals
+      atomicAmount = (amountFloat * 1_000_000).toFixed(0);
+      inputContract = USDC_CONTRACT;
+    } else {
+      // NEAR has 24 decimals
+      const yoctoAmount = utils.format.parseNearAmount(amount);
+      if (!yoctoAmount) {
+        return NextResponse.json(
+          { error: "Invalid NEAR amount" },
+          { status: 400 }
+        );
+      }
+      atomicAmount = yoctoAmount;
+      inputContract = WNEAR_CONTRACT;
+    }
 
     // Prepare RPC request
     const rpcRequest = {
@@ -34,7 +63,7 @@ export async function GET(request: Request) {
       method: "quote",
       params: [
         {
-          defuse_asset_identifier_in: `nep141:${USDC_CONTRACT}`,
+          defuse_asset_identifier_in: `nep141:${inputContract}`,
           defuse_asset_identifier_out: `nep141:${BTC_CONTRACT}`,
           exact_amount_in: atomicAmount,
           min_deadline_ms: 120000
@@ -64,7 +93,12 @@ export async function GET(request: Request) {
     const quote = data.result[0];
     
     // Convert amounts to human readable format
-    const humanAmountIn = (parseInt(quote.amount_in) / 1_000_000).toString(); // USDC has 6 decimals
+    let humanAmountIn: string;
+    if (token === 'usdc') {
+      humanAmountIn = (parseInt(quote.amount_in) / 1_000_000).toString(); // USDC has 6 decimals
+    } else {
+      humanAmountIn = utils.format.formatNearAmount(quote.amount_in); // NEAR has 24 decimals
+    }
     const humanAmountOut = (parseInt(quote.amount_out) / 100_000_000).toString(); // BTC has 8 decimals
 
     return NextResponse.json({
