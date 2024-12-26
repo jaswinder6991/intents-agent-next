@@ -24,228 +24,13 @@ export async function GET() {
         "x-mb": {
             "account-id": key.accountId,
             assistant: {
-                name: "Your Assistant",
-                description: "An assistant that answers with blockchain information",
-                instructions: "You answer with a list of blockchains. Use the tools to get blockchain information.",
+                name: "Intents Agent - Multichain DEX",
+                description: "An agent that lets you use the intents technology on Near to swap tokens across multiple chains.",
+                instructions: "You provide answers with transaction to sign for submitting asset to the intents contract, messaging signing for swap requests.",
                 tools: [{ type: "generate-transaction" }]
             },
         },
         paths: {
-            "/api/tools/get-blockchains": {
-                get: {
-                    summary: "get blockchain information",
-                    description: "Respond with a list of blockchains",
-                    operationId: "get-blockchains",
-                    responses: {
-                        "200": {
-                            description: "Successful response",
-                            content: {
-                                "application/json": {
-                                    schema: {
-                                        type: "object",
-                                        properties: {
-                                            message: {
-                                                type: "string",
-                                                description: "The list of blockchains",
-                                            },
-                                        },
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-            "/api/tools/get-user": {
-                get: {
-                    summary: "get user information",
-                    description: "Respond with user account ID",
-                    operationId: "get-user",
-                    responses: {
-                        "200": {
-                            description: "Successful response",
-                            content: {
-                                "application/json": {
-                                    schema: {
-                                        type: "object",
-                                        properties: {
-                                            accountId: {
-                                                type: "string",
-                                                description: "The user's account ID",
-                                            },
-                                        },
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-            "/api/tools/reddit": {
-                get: {
-                    summary: "get Reddit frontpage posts",
-                    description: "Fetch and return a list of posts from the Reddit frontpage",
-                    operationId: "get-reddit-posts",
-                    responses: {
-                        "200": {
-                            description: "Successful response",
-                            content: {
-                                "application/json": {
-                                    schema: {
-                                        type: "object",
-                                        properties: {
-                                            posts: {
-                                                type: "array",
-                                                items: {
-                                                    type: "object",
-                                                    properties: {
-                                                        title: {
-                                                            type: "string",
-                                                            description: "The title of the post"
-                                                        },
-                                                        author: {
-                                                            type: "string",
-                                                            description: "The username of the post author"
-                                                        },
-                                                        subreddit: {
-                                                            type: "string",
-                                                            description: "The subreddit where the post was made"
-                                                        },
-                                                        score: {
-                                                            type: "number",
-                                                            description: "The score (upvotes) of the post"
-                                                        },
-                                                        num_comments: {
-                                                            type: "number",
-                                                            description: "The number of comments on the post"
-                                                        },
-                                                        url: {
-                                                            type: "string",
-                                                            description: "The URL of the post on Reddit"
-                                                        }
-                                                    }
-                                                },
-                                                description: "An array of Reddit posts"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "500": {
-                            description: "Error response",
-                            content: {
-                                "application/json": {
-                                    schema: {
-                                        type: "object",
-                                        properties: {
-                                            error: {
-                                                type: "string",
-                                                description: "Error message"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "/api/tools/twitter": {
-                get: {
-                    operationId: "getTwitterShareIntent",
-                    summary: "Generate a Twitter share intent URL",
-                    description: "Creates a Twitter share intent URL based on provided parameters",
-                    parameters: [
-                        {
-                            name: "text",
-                            in: "query",
-                            required: true,
-                            schema: {
-                                type: "string"
-                            },
-                            description: "The text content of the tweet"
-                        },
-                        {
-                            name: "url",
-                            in: "query",
-                            required: false,
-                            schema: {
-                                type: "string"
-                            },
-                            description: "The URL to be shared in the tweet"
-                        },
-                        {
-                            name: "hashtags",
-                            in: "query",
-                            required: false,
-                            schema: {
-                                type: "string"
-                            },
-                            description: "Comma-separated hashtags for the tweet"
-                        },
-                        {
-                            name: "via",
-                            in: "query",
-                            required: false,
-                            schema: {
-                                type: "string"
-                            },
-                            description: "The Twitter username to attribute the tweet to"
-                        }
-                    ],
-                    responses: {
-                        "200": {
-                            description: "Successful response",
-                            content: {
-                                "application/json": {
-                                    schema: {
-                                        type: "object",
-                                        properties: {
-                                            twitterIntentUrl: {
-                                                type: "string",
-                                                description: "The generated Twitter share intent URL"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "400": {
-                            description: "Bad request",
-                            content: {
-                                "application/json": {
-                                    schema: {
-                                        type: "object",
-                                        properties: {
-                                            error: {
-                                                type: "string",
-                                                description: "Error message"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "500": {
-                            description: "Error response",
-                            content: {
-                                "application/json": {
-                                    schema: {
-                                        type: "object",
-                                        properties: {
-                                            error: {
-                                                type: "string",
-                                                description: "Error message"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
             "/api/tools/create-transaction": {
                 get: {
                     operationId: "createNearTransaction",
@@ -349,11 +134,31 @@ export async function GET() {
                     }
                 }
             },
-            "/api/tools/coinflip": {
+            "/api/tools/deposit-usdc": {
                 get: {
-                    summary: "Coin flip",
-                    description: "Flip a coin and return the result (heads or tails)",
-                    operationId: "coinFlip",
+                    operationId: "depositUSDC",
+                    summary: "Create a fungible token transfer call transaction to deposit USDC to intents.near address",
+                    description: "Generates a transaction payload for transferring fungible tokens with a function call",
+                    parameters: [
+                        {
+                            name: "receiverId",
+                            in: "query",
+                            required: true,
+                            schema: {
+                                type: "string"
+                            },
+                            description: "The account ID of the receiver"
+                        },
+                        {
+                            name: "amount",
+                            in: "query",
+                            required: true,
+                            schema: {
+                                type: "string"
+                            },
+                            description: "The amount of tokens to transfer"
+                        },
+                    ],
                     responses: {
                         "200": {
                             description: "Successful response",
@@ -362,10 +167,224 @@ export async function GET() {
                                     schema: {
                                         type: "object",
                                         properties: {
-                                            result: {
+                                            transactionPayload: {
+                                                type: "object",
+                                                properties: {
+                                                    receiverId: {
+                                                        type: "string",
+                                                        description: "The contract ID of the fungible token"
+                                                    },
+                                                    actions: {
+                                                        type: "array",
+                                                        items: {
+                                                            type: "object",
+                                                            properties: {
+                                                                type: {
+                                                                    type: "string",
+                                                                    description: "The type of action (FunctionCall)"
+                                                                },
+                                                                params: {
+                                                                    type: "object",
+                                                                    properties: {
+                                                                        methodName: {
+                                                                            type: "string",
+                                                                            description: "The name of the method to call (ft_transfer_call)"
+                                                                        },
+                                                                        args: {
+                                                                            type: "object",
+                                                                            properties: {
+                                                                                receiver_id: {
+                                                                                    type: "string",
+                                                                                    description: "The account ID of the receiver"
+                                                                                },
+                                                                                amount: {
+                                                                                    type: "string",
+                                                                                    description: "The amount of tokens to transfer"
+                                                                                },
+                                                                                msg: {
+                                                                                    type: "string",
+                                                                                    description: "The message to pass to the receiver's contract"
+                                                                                }
+                                                                            }
+                                                                        },
+                                                                        gas: {
+                                                                            type: "string",
+                                                                            description: "The amount of gas to attach"
+                                                                        },
+                                                                        deposit: {
+                                                                            type: "string",
+                                                                            description: "The amount of NEAR to attach (usually 1 yoctoNEAR)"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "400": {
+                            description: "Bad request",
+                            content: {
+                                "application/json": {
+                                    schema: {
+                                        type: "object",
+                                        properties: {
+                                            error: {
                                                 type: "string",
-                                                description: "The result of the coin flip (heads or tails)",
-                                                enum: ["heads", "tails"]
+                                                description: "Error message"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "500": {
+                            description: "Error response",
+                            content: {
+                                "application/json": {
+                                    schema: {
+                                        type: "object",
+                                        properties: {
+                                            error: {
+                                                type: "string",
+                                                description: "Error message"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "/api/tools/get-btc-quote": {
+                get: {
+                    operationId: "getBtcQuote",
+                    summary: "Get quote for swapping USDC to BTC",
+                    description: "Returns the amount of BTC you would receive for a given USDC amount",
+                    parameters: [
+                        {
+                            name: "amount",
+                            in: "query",
+                            required: true,
+                            schema: {
+                                type: "string"
+                            },
+                            description: "The amount of USDC to swap (in human readable format, e.g. '5' for 5 USDC)"
+                        }
+                    ],
+                    responses: {
+                        "200": {
+                            description: "Successful response",
+                            content: {
+                                "application/json": {
+                                    schema: {
+                                        type: "object",
+                                        properties: {
+                                            amountIn: {
+                                                type: "string",
+                                                description: "The input amount in USDC"
+                                            },
+                                            amountOut: {
+                                                type: "string",
+                                                description: "The output amount in BTC"
+                                            },
+                                            quoteHash: {
+                                                type: "string",
+                                                description: "The hash of the quote"
+                                            },
+                                            expirationTime: {
+                                                type: "string",
+                                                description: "The expiration time of the quote"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "400": {
+                            description: "Bad request",
+                            content: {
+                                "application/json": {
+                                    schema: {
+                                        type: "object",
+                                        properties: {
+                                            error: {
+                                                type: "string",
+                                                description: "Error message"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "500": {
+                            description: "Error response",
+                            content: {
+                                "application/json": {
+                                    schema: {
+                                        type: "object",
+                                        properties: {
+                                            error: {
+                                                type: "string",
+                                                description: "Error message"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "/api/tools/deposit-near": {
+                get: {
+                    operationId: "depositNear",
+                    summary: "Create a batch transaction to deposit wrapped NEAR to intents.near address",
+                    description: "Generates a transaction payload that first wraps NEAR using near_deposit, then transfers the wrapped NEAR using ft_transfer_call",
+                    parameters: [
+                        {
+                            name: "amount",
+                            in: "query",
+                            required: true,
+                            schema: {
+                                type: "string"
+                            },
+                            description: "The amount of NEAR to deposit (will be wrapped and sent to intents.near)"
+                        }
+                    ],
+                    responses: {
+                        "200": {
+                            description: "Successful response",
+                            content: {
+                                "application/json": {
+                                    schema: {
+                                        type: "object",
+                                        properties: {
+                                            prompt: {
+                                                type: "string",
+                                                description: "A prompt containing the batch transaction data for wrapping and transferring NEAR"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "400": {
+                            description: "Bad request",
+                            content: {
+                                "application/json": {
+                                    schema: {
+                                        type: "object",
+                                        properties: {
+                                            error: {
+                                                type: "string",
+                                                description: "Error message"
                                             }
                                         }
                                     }
